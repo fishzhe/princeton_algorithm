@@ -7,17 +7,26 @@ import java.util.NoSuchElementException;
 
 /**
  * Created by zheyu on 10/14/16.
+ *
+ * Description:
+ *  RandomizedQueue following instructions.
+ *  Score: 99/100; Lost one point because randomNode() is not constant time.
+ *  Could use array to implement it, so that randomNode() will use constant time.
+ *  But the complicated part of using array is default array size. And also don't
+ *  forget to deal with inserting more elements than array size.
  */
 public class RandomizedQueue<Item> implements Iterable<Item> {
 
     private int size;
     private Node first;
-    private Node last;
 
-    public RandomizedQueue(){
+    public RandomizedQueue() {
         size = 0;
         first = null;
-        last = null;
+    }
+
+    public int size() {
+        return this.size;
     }
 
     public boolean isEmpty() {
@@ -34,9 +43,6 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             first.prev = node;
         }
         first = node;
-        if (isEmpty()) {
-            last = first;
-        }
         size++;
     }
 
@@ -49,12 +55,10 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             first = next;
         }
 
-        if (next == null) {
-            last = prev;
-        }
-
-        if (prev != null && next != null) {
+        if (prev != null) {
             prev.next = next;
+        }
+        if (next != null) {
             next.prev = prev;
         }
         size--;
@@ -64,7 +68,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         return randomNode().item;
     }
 
-    private Node randomNode(){
+    private Node randomNode() {
         removeEmptyDeque();
         int pos = StdRandom.uniform(size);
         Node node = first;
@@ -89,7 +93,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         private Item[] array;
         private int iSize;
 
-        public RandomizedQueueIterator(Node node, int size){
+        public RandomizedQueueIterator(Node node, int size) {
             array = (Item[]) new Object[size];
             iSize = 0;
             while (node != null) {
@@ -129,10 +133,10 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
 
-    class Node {
-        Item item;
-        Node next;
-        Node prev;
+    private class Node {
+        private Item item;
+        private Node next;
+        private Node prev;
         public Node(Item item) {
             this.item = item;
             next = null;
@@ -147,6 +151,16 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         dq.enqueue(4);
         dq.enqueue(5);
 
+        System.out.println("-----------------------------");
+        for (int i = 0; i < 10; i++) {
+            System.out.println(dq.sample());
+        }
+
+        System.out.println("-----------------------------");
+        while (!dq.isEmpty()) {
+            System.out.println(dq.dequeue());
+        }
+
         Iterator<Integer> iterator = dq.iterator();
         Iterator<Integer> iterator2 = dq.iterator();
 
@@ -160,15 +174,6 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             System.out.println(iterator2.next());
         }
 
-        System.out.println("-----------------------------");
-        for (int i = 0; i < 10; i++) {
-            System.out.println(dq.sample());
-        }
-
-        System.out.println("-----------------------------");
-        while (!dq.isEmpty()) {
-            System.out.println(dq.dequeue());
-        }
 
     }
 
